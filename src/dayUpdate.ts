@@ -1,9 +1,9 @@
 import { ethereum } from '@graphprotocol/graph-ts'
-import { DayData, ExohoodFactoryEntity } from '../generated/schema'
+import { DayData, ExoswapFactoryEntity } from '../generated/schema'
 import { FACTORY_ADDRESS, ZERO_BD, ZERO_BI } from './helpers'
 
 export function updateDayData(event: ethereum.Event): void {
-    let factory = ExohoodFactoryEntity.load(FACTORY_ADDRESS)
+    let factory = ExoswapFactoryEntity.load(FACTORY_ADDRESS)
     let timestamp = event.block.timestamp.toI32()
     let dayID = timestamp / 86400
     let dayStartTimestamp = dayID * 86400
