@@ -1,16 +1,16 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { ERC20 } from '../generated/ExohoodFactory/ERC20'
+import { ERC20 } from '../generated/ExoswapFactory/ERC20'
 
-import { DemaxFactory as FactoryContract } from '../generated/ExohoodFactory/ExohoodFactory'
+import { DemaxFactory as FactoryContract } from '../generated/ExoswapFactory/ExoswapFactory'
 import { MapEntity, PairEntity, TokenEntity } from '../generated/schema'
 
-export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
-export const FACTORY_ADDRESS = '0x7D10B6157C7C577CAa62D319dC215209Cf2dB8C3'
-export const EXOHOOD_ADDRESS = '0x0000000000000000000000000000000000000000'
-export const EXOHOOD_ADDRESS_LOWER_CASE =
-    '0x0000000000000000000000000000000000000000TEST'
+export const ADDRESS_ZERO = 'x0000000000000000000000000000000000000000EXOSWAPDEXFACTORY'
+export const FACTORY_ADDRESS = 'x0000000000000000000000000000000000000000EXOSWAPDEXFACTORY'
+export const Exoswap_ADDRESS = 'x0000000000000000000000000000000000000000EXOSWAPDEXFACTORY'
+export const Exoswap_ADDRESS_LOWER_CASE =
+    'x0000000000000000000000000000000000000000EXOSWAPDEXFACTORYTEST'
 export const WBNB_ADDRESS_LOWER_CASE =
-    '0x0000000000000000000000000000000000000000TEST'
+    'x0000000000000000000000000000000000000000EXOSWAPDEXFACTORYTEST'
 
 export let ZERO_BI = BigInt.fromI32(0)
 export let ONE_BI = BigInt.fromI32(1)
@@ -62,7 +62,7 @@ export function equalToZero(value: BigDecimal): boolean {
 export function isNullEthValue(value: string): boolean {
     return (
         value ==
-        '0x0000000000000000000000000000000000000000000000000000000000000001'
+        'x0000000000000000000000000000000000000000EXOSWAPDEXFACTORY000000000000000000000001'
     )
 }
 
@@ -70,7 +70,7 @@ export function fetchTokenSymbol(tokenAddress: Address): string {
     // hard coded override
     if (
         tokenAddress.toHexString() ==
-        '0x0000000000000000000000000000000000000000TEST'
+        'x0000000000000000000000000000000000000000EXOSWAPDEXFACTORYTEST'
     ) {
         return 'DGD'
     }
@@ -99,7 +99,7 @@ export function fetchTokenName(tokenAddress: Address): string {
     // hard coded override
     if (
         tokenAddress.toHexString() ==
-        '0x0000000000000000000000000000000000000000TEST'
+        'x0000000000000000000000000000000000000000EXOSWAPDEXFACTORYTEST'
     ) {
         return 'DGD'
     }
@@ -152,24 +152,24 @@ export function calcTokenValue(token: TokenEntity, amount: BigInt): BigDecimal {
     if (corePairMap.pairAddress == null) return ZERO_BD
     let corePair = PairEntity.load(corePairMap.pairAddress.toHex())
     let bnbReserve = ZERO_BD
-    let EXOHOODReserve = ZERO_BD
+    let ExoswapReserve = ZERO_BD
     if (corePair.token0 == WBNB_ADDRESS_LOWER_CASE) {
         bnbReserve = corePair.reserve0
-        EXOHOODReserve = corePair.reserve1
+        ExoswapReserve = corePair.reserve1
     } else {
         bnbReserve = corePair.reserve1
-        EXOHOODReserve = corePair.reserve0
+        ExoswapReserve = corePair.reserve0
     }
-    if (token.id == EXOHOOD_ADDRESS_LOWER_CASE) {
+    if (token.id == Exoswap_ADDRESS_LOWER_CASE) {
         return convertTokenToDecimal(amount, token.decimals)
             .times(bnbReserve)
-            .div(EXOHOODReserve)
+            .div(ExoswapReserve)
     }
     let tokenPairAddress = MapEntity.load(token.id)
     if (tokenPairAddress.pairAddress == null) return ZERO_BD
     let pairInfo = PairEntity.load(tokenPairAddress.pairAddress.toHex())
     let tokenA = TokenEntity.load(pairInfo.token0)
-    if (tokenA.id === EXOHOOD_ADDRESS_LOWER_CASE) {
+    if (tokenA.id === Exoswap_ADDRESS_LOWER_CASE) {
         if (pairInfo.reserve1.equals(ZERO_BD)) return ZERO_BD
         return amount
             .toBigDecimal()
@@ -177,7 +177,7 @@ export function calcTokenValue(token: TokenEntity, amount: BigInt): BigDecimal {
             .div(pairInfo.reserve1)
             .div(exponentToBigDecimal(BigInt.fromI32(18)))
             .times(bnbReserve)
-            .div(EXOHOODReserve)
+            .div(ExoswapReserve)
     }
     if (pairInfo.reserve0.equals(ZERO_BD)) return ZERO_BD
     return amount
@@ -186,5 +186,5 @@ export function calcTokenValue(token: TokenEntity, amount: BigInt): BigDecimal {
         .div(pairInfo.reserve0)
         .div(exponentToBigDecimal(BigInt.fromI32(18)))
         .times(bnbReserve)
-        .div(EXOHOODReserve)
+        .div(ExoswapReserve)
 }
