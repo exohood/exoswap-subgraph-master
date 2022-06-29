@@ -1,4 +1,4 @@
-type ExohoodFactoryEntity @entity {
+type ExoswapDexFactoryEntity @entity {
     # factory address
     id: ID!
     # pair info
