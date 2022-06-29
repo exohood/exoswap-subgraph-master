@@ -1,7 +1,7 @@
 import { Address, log } from '@graphprotocol/graph-ts'
-import { PairCreated } from '../generated/ExohoodFactory/ExohoodFactory'
+import { PairCreated } from '../generated/ExoswapFactory/ExoswapFactory'
 import {
-    EXOHOOD_ADDRESS_LOWER_CASE,
+    Exoswap_ADDRESS_LOWER_CASE,
     FACTORY_ADDRESS,
     fetchTokenDecimals,
     fetchTokenName,
@@ -10,19 +10,19 @@ import {
     ZERO_BI
 } from './helpers'
 import {
-    ExohoodFactoryEntity,
+    ExoswapFactoryEntity,
     MapEntity,
     PairEntity,
     TokenEntity
 } from '../generated/schema'
 
-import { ExohoodPairTemplate } from '../generated/templates'
+import { ExoswapPairTemplate } from '../generated/templates'
 
 export function handleNewPair(event: PairCreated): void {
     //log.info(`--handleNewPair` + event.params.pair.toHex(), [])
-    let factory = ExohoodFactoryEntity.load(FACTORY_ADDRESS)
+    let factory = ExoswapFactoryEntity.load(FACTORY_ADDRESS)
     if (factory == null) {
-        factory = new ExohoodFactoryEntity(FACTORY_ADDRESS)
+        factory = new ExoswapFactoryEntity(FACTORY_ADDRESS)
         factory.pairCount = 0
         factory.txCount = ZERO_BI
         factory.LPValue = ZERO_BD
@@ -73,13 +73,13 @@ export function handleNewPair(event: PairCreated): void {
     pair.createdAtTimestamp = event.block.timestamp
     pair.createdAtBlockNumber = event.block.number
     pair.txCount = ZERO_BI
-    pair.txEXOHOODValue = ZERO_BD
+    pair.txExoswapValue = ZERO_BD
     pair.reserve0 = ZERO_BD
     pair.reserve1 = ZERO_BD
 
-    ExohoodPairTemplate.create(event.params.pair)
+    ExoswapPairTemplate.create(event.params.pair)
 
-    if (token0.id != EXOHOOD_ADDRESS_LOWER_CASE) {
+    if (token0.id != Exoswap_ADDRESS_LOWER_CASE) {
         let map = MapEntity.load(token0.id)
         if (map == null) {
             map = new MapEntity(token0.id)
@@ -87,7 +87,7 @@ export function handleNewPair(event: PairCreated): void {
             map.save()
         }
     }
-    if (token1.id != EXOHOOD_ADDRESS_LOWER_CASE) {
+    if (token1.id != Exoswap_ADDRESS_LOWER_CASE) {
         let map = MapEntity.load(token1.id)
         if (map == null) {
             map = new MapEntity(token1.id)
