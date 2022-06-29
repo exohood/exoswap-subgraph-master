@@ -1,5 +1,5 @@
 import {
-    ExohoodFactoryEntity,
+    ExoswapFactoryEntity,
     PairEntity,
     TokenEntity
 } from '../generated/schema'
@@ -7,7 +7,7 @@ import {
     Burn1 as Burn,
     Mint1 as Mint,
     Swap
-} from '../generated/templates/ExohoodPairTemplate/ExohoodPair'
+} from '../generated/templates/ExoswapPairTemplate/ExoswapPair'
 import {
     calcTokenValue,
     convertTokenToDecimal,
@@ -19,7 +19,7 @@ import { updateDayData } from './dayUpdate'
 export function handleMint(event: Mint): void {
     //log.info(`--handleMint` + event.address.toHex() + '--', [])
     let pair = PairEntity.load(event.address.toHex())
-    let factoryEntity = ExohoodFactoryEntity.load(FACTORY_ADDRESS)
+    let factoryEntity = ExoswapFactoryEntity.load(FACTORY_ADDRESS)
     //
     let token0 = TokenEntity.load(pair.token0)
     let token1 = TokenEntity.load(pair.token1)
@@ -55,7 +55,7 @@ export function handleMint(event: Mint): void {
 }
 
 export function handleSwap(event: Swap): void {
-    let factory = ExohoodFactoryEntity.load(FACTORY_ADDRESS)
+    let factory = ExoswapFactoryEntity.load(FACTORY_ADDRESS)
 
     let pair = PairEntity.load(event.address.toHex())
     let token0 = TokenEntity.load(pair.token0)
@@ -73,20 +73,20 @@ export function handleSwap(event: Swap): void {
     pair.reserve1 = pair.reserve1.plus(
         convertTokenToDecimal(event.params.amount1In, token1.decimals)
     )
-    let txExohoodValue = calcTokenValue(
+    let txExoswapValue = calcTokenValue(
         token0 as TokenEntity,
         event.params.amount0In
     ).plus(calcTokenValue(token1 as TokenEntity, event.params.amount1In))
-    pair.txExohoodValue = pair.txExohoodValue.plus(txExohoodValue)
+    pair.txExoswapValue = pair.txExoswapValue.plus(txExoswapValue)
     pair.save()
     factory.txCount = factory.txCount.plus(ONE_BI)
-    factory.tradeValue = factory.tradeValue.plus(txExohoodValue)
+    factory.tradeValue = factory.tradeValue.plus(txExoswapValue)
     factory.save()
     updateDayData(event)
 }
 
 export function handleBurn(event: Burn): void {
-    let factory = ExohoodFactoryEntity.load(FACTORY_ADDRESS)
+    let factory = ExoswapFactoryEntity.load(FACTORY_ADDRESS)
     let pair = PairEntity.load(event.address.toHex())
     let token0 = TokenEntity.load(pair.token0)
     let token1 = TokenEntity.load(pair.token1)
@@ -96,15 +96,15 @@ export function handleBurn(event: Burn): void {
     pair.reserve1 = pair.reserve1.minus(
         convertTokenToDecimal(event.params.amount1, token1.decimals)
     )
-    let txExohoodValue = calcTokenValue(
+    let txExoswapValue = calcTokenValue(
         token0 as TokenEntity,
         event.params.amount0
     ).plus(calcTokenValue(token1 as TokenEntity, event.params.amount1))
-    pair.txExohoodValue = pair.txExohoodValue.plus(txExohoodValue)
+    pair.txExoswapValue = pair.txExoswapValue.plus(txExoswapValue)
     pair.txCount = pair.txCount.plus(ONE_BI)
     pair.save()
     factory.txCount = factory.txCount.plus(ONE_BI)
-    factory.LPValue = factory.LPValue.minus(txExohoodValue)
+    factory.LPValue = factory.LPValue.minus(txExoswapValue)
     factory.save()
     updateDayData(event)
 }
