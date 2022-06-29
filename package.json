@@ -1,14 +1,14 @@
 {
-    "name": "Exohood",
-    "version": "0.1.0",
+    "name": "Exoswap",
+    "version": "0.0.1",
     "scripts": {
         "migrate": "truffle migrate --reset",
         "compile": "truffle compile",
         "flatten": "waffle flatten",
-        "create-local": "graph create TestNet/Exohood --node http://127.0.0.1:8020",
+        "create-local": "graph create TestNet/Exoswap --node http://127.0.0.1:8020",
         "codegen": "graph codegen",
         "build": "graph build",
-        "deploy-local": "graph deploy TestNet/Exohood --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
+        "deploy-local": "graph deploy TestNet/Exoswap --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "^0.18.0",
